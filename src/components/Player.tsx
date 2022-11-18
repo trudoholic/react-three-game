@@ -10,9 +10,7 @@ export const Player: FC<Props> = ({setPlayer}) => {
     const player = useRef<Mesh>(null!)
 
     // trigger on component mount
-    useEffect(() => {
-        setPlayer(player)
-    }, [setPlayer])
+    useEffect(() => { setPlayer(player) }, [setPlayer])
 
     return (
         <mesh

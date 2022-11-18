@@ -1,16 +1,21 @@
 import React, {RefObject, useEffect, useRef, useState} from "react";
-import {Player} from "./Player"
+import {wait} from "@testing-library/user-event/dist/utils";
 import {Mesh} from "three";
+import {Player} from "./Player";
+import {Ball, IBall} from "./Ball";
 
 export const Game = () => {
 
+    const balls = useRef<IBall[]>([])
+    const [time, setTime] = useState(0)
     const [player, setPlayer] = useState<RefObject<Mesh>>(null!)
     const [mounted, setMounted] = useState(false)
 
     //set up listeners
-    // useEffect(() => {
-    //     generateBalls();
-    // }, []);
+    useEffect(() => {
+        console.log('generateBalls!')
+        generateBalls();
+    }, [])
 
     useEffect(() => {
         if (!mounted) {
@@ -18,13 +23,27 @@ export const Game = () => {
         }
     }, [player, mounted])
 
-    // useEffect( () => {
-    //     wait(1000)
-    //         .then(() => setTime(t => t + 1000));
-    // }, [time]);
+    useEffect( () => {
+        wait(1000)
+            .then(() => setTime(t => t + 1000));
+    }, [time])
+
     // useEffect(() => {
     //     checkIfCollide();
     // }, [player, balls]);
+
+    const generateBalls = () => {
+        window.setInterval(() => {
+            balls.current.push({
+                pos: {
+                    x: Math.floor(Math.random() * 10) - 5,
+                    y: Math.floor(Math.random() * 10) - 5
+                },
+                nonce: Math.floor(Math.random() * 1000)
+            })
+            console.log('push:', balls.current.length)
+        }, 5000)
+    }
 
     const setUpListeners = () => {
         if (player && player.current) {
@@ -55,9 +74,11 @@ export const Game = () => {
     }
 
     return (
-        <Player setPlayer={setPlayer}/>
-        // {balls.current.map((ball, i) => {
-        //     return <Ball ball={ball} key={`${ball.pos.x}-${ball.pos.y}-${ball.nonce}`}/>
-        // })}
+        <>
+            <Player setPlayer={setPlayer}/>
+            {balls.current.map((ball, i) => {
+                return <Ball ball={ball} key={`${ball.pos.x}-${ball.pos.y}-${ball.nonce}`}/>
+            })}
+        </>
     )
 }
