@@ -13,7 +13,6 @@ export const Game = () => {
 
     //set up listeners
     useEffect(() => {
-        console.log('generateBalls!')
         generateBalls();
     }, [])
 
@@ -28,9 +27,9 @@ export const Game = () => {
             .then(() => setTime(t => t + 1000));
     }, [time])
 
-    // useEffect(() => {
-    //     checkIfCollide();
-    // }, [player, balls]);
+    useEffect(() => {
+        checkIfCollide();
+    }, [player, balls])
 
     const generateBalls = () => {
         window.setInterval(() => {
@@ -41,7 +40,6 @@ export const Game = () => {
                 },
                 nonce: Math.floor(Math.random() * 1000)
             })
-            console.log('push:', balls.current.length)
         }, 5000)
     }
 
@@ -70,6 +68,20 @@ export const Game = () => {
                 //to force update state
                 setPlayer(Object.create(player));
             })
+        }
+    }
+
+    const checkIfCollide = () => {
+        if (player) {
+            for (let i = 0; i < balls.current.length; i++) {
+                if (Math.floor(player.current!.position.x) === balls.current[i].pos.x &&
+                    Math.floor(player.current!.position.y) === balls.current[i].pos.y
+                ) {
+                    balls.current.splice(i, 1)
+                    console.log('Yummy!')
+                    break
+                }
+            }
         }
     }
 
